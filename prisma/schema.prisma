@@ -7,3 +7,27 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model acesso_usuario {
+  id_usuario           Int       @id @default(autoincrement())
+  hash_registro        String?   @db.VarChar(32)
+  nome_usuario         String?   @db.VarChar(60)
+  login_usuario        String?   @db.VarChar(60)
+  senha_usuario        String?   @db.VarChar(150)
+  id_lead              Int?
+  id_pessoa            Int?
+  data_inclusao        DateTime  @db.Timestamp(0)
+  user_inclusao        Int
+  data_alteracao       DateTime  @db.Timestamp(0)
+  user_alteracao       Int
+  ind_bloqueado        Int       @default(0)
+  ind_ativo            Int       @default(0)
+  ind_expira_senha     Int       @default(0)
+  data_hora_bloqueio   DateTime? @db.Timestamp(0)
+  data_hora_inativa    DateTime? @db.Timestamp(0)
+  data_hora_expira     DateTime? @db.Timestamp(0)
+  hash_senha           String?   @db.VarChar(32)
+  data_alteracao_senha DateTime? @db.Timestamp(0)
+  data_inclusao_senha  DateTime? @db.Timestamp(0)
+  filtros_coluna       Json?
+}
