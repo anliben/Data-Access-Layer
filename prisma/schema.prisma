@@ -8,26 +8,244 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model acesso_acao_tipo_componente {
+  id_acesso_acao_tipo_componente Int      @id @default(autoincrement())
+  hash_registro                  String?  @db.VarChar(32)
+  nome_tipo                      String?  @db.VarChar(100)
+  data_inclusao                  DateTime @db.Timestamp(0)
+  user_inclusao                  Int
+  data_alteracao                 DateTime @db.Timestamp(0)
+  user_alteracao                 Int
+
+  acesso_acao acesso_acao[]
+}
+
+model acesso_acao {
+  id_acesso_acao                          Int                         @id @default(autoincrement())
+  hash_registro                           String?                     @db.VarChar(32)
+  nome_acao                               String?                     @db.VarChar(100)
+  ind_ativo                               Boolean                     @default(false)
+  data_inclusao                           DateTime                    @db.Timestamp(0)
+  user_inclusao                           Int
+  data_alteracao                          DateTime                    @db.Timestamp(0)
+  user_alteracao                          Int
+  ind_acao_geral                          Boolean                     @default(false)
+  id_acao_tipo                            Int
+  nome_componente                         String?                     @db.VarChar(100)
+  acao_tipo_componente                    acesso_acao_tipo_componente @relation(fields: [id_acao_tipo], references: [id_acesso_acao_tipo_componente])
+  acesso_acao_tela                        acesso_acao_tela[]
+  acesso_perfil_acao                      acesso_perfil_acao?         @relation(fields: [acesso_perfil_acaoId_acesso_perfil_acao], references: [id_acesso_perfil_acao])
+  acesso_perfil_acaoId_acesso_perfil_acao Int?
+}
+
+model acesso_perfil_acao {
+  id_acesso_perfil_acao Int      @id @default(autoincrement())
+  hash_registro         String?  @db.VarChar(32)
+  id_perfil             Int
+  id_acao               Int
+  data_inclusao         DateTime @db.Timestamp(0)
+  user_inclusao         Int
+
+  acesso_acao      acesso_acao[]
+  acesso_acao_tela acesso_acao_tela[]
+}
+
+model acesso_acao_tela {
+  id_acesso_acao_tela                     Int                       @id @default(autoincrement())
+  hash_registro                           String?                   @db.VarChar(32)
+  id_acao                                 Int
+  id_tela                                 Int
+  descricao                               String?                   @db.VarChar(100)
+  data_inclusao                           DateTime                  @db.Timestamp(0)
+  user_inclusao                           Int
+  data_alteracao                          DateTime                  @db.Timestamp(0)
+  user_alteracao                          Int
+  acesso_acao                             acesso_acao               @relation(fields: [id_acao], references: [id_acesso_acao])
+  acesso_tela                             acesso_tela               @relation(fields: [id_tela], references: [id_acesso_tela])
+  acesso_acao_tela_perfil                 acesso_acao_tela_perfil[]
+  acesso_perfil_acao                      acesso_perfil_acao?       @relation(fields: [acesso_perfil_acaoId_acesso_perfil_acao], references: [id_acesso_perfil_acao])
+  acesso_perfil_acaoId_acesso_perfil_acao Int?
+}
+
+model acesso_modulo {
+  id_acesso_modulo Int           @id @default(autoincrement())
+  hash_registro    String?       @db.VarChar(32)
+  nome_modulo      String?       @db.VarChar(100)
+  ativo            Boolean       @default(false)
+  data_inclusao    DateTime      @db.Timestamp(0)
+  user_inclusao    Int
+  data_alteracao   DateTime      @db.Timestamp(0)
+  user_alteracao   Int
+  acesso_tela      acesso_tela[]
+}
+
+model acesso_tela {
+  id_acesso_tela     Int                  @id @default(autoincrement())
+  hash_registro      String?              @db.VarChar(32)
+  nome_tela          String?              @db.VarChar(100)
+  ind_pesquisa       Boolean              @default(false)
+  ind_dashboard      Boolean              @default(false)
+  ind_menu           Boolean              @default(false)
+  id_modulo          Int
+  ativo              Boolean              @default(false)
+  descricao          String?              @db.VarChar(255)
+  data_inclusao      DateTime             @db.Timestamp(0)
+  user_inclusao      Int
+  data_alteracao     DateTime             @db.Timestamp(0)
+  user_alteracao     Int
+  acesso_modulo      acesso_modulo        @relation(fields: [id_modulo], references: [id_acesso_modulo])
+  acesso_perfil_tela acesso_perfil_tela[]
+  acesso_acao_tela   acesso_acao_tela[]
+}
+
+model acesso_acao_tela_perfil {
+  id_acesso_acao_tela_perfil              Int                 @id @default(autoincrement())
+  hash_registro                           String?             @db.VarChar(32)
+  id_perfil                               Int
+  id_acao_tela                            Int
+  ind_ativo                               Boolean             @default(false)
+  data_inclusao                           DateTime
+  user_inclusao                           Int
+  data_alteracao                          DateTime
+  user_alteracao                          Int
+  acesso_perfil_tela                      acesso_perfil_tela? @relation(fields: [acesso_perfil_telaId_acesso_perfil_tela], references: [id_acesso_perfil_tela])
+  acesso_perfil_telaId_acesso_perfil_tela Int?
+  acesso_acao_tela                        acesso_acao_tela?   @relation(fields: [acesso_acao_telaId_acesso_acao_tela], references: [id_acesso_acao_tela])
+  acesso_acao_telaId_acesso_acao_tela     Int?
+}
+
+model acesso_perfil {
+  id_perfil             Int                     @id @default(autoincrement())
+  hash_registro         String?                 @db.VarChar(32)
+  nome_perfil           String?                 @db.VarChar(100)
+  id_empresa            Int
+  ind_ativo             Boolean                 @default(false)
+  data_inclusao         DateTime                @db.Timestamp(0)
+  user_inclusao         Int
+  data_alteracao        DateTime                @db.Timestamp(0)
+  user_alteracao        Int
+  acesso_usuario_perfil acesso_usuario_perfil[]
+  empresa               empresa                 @relation(fields: [id_empresa], references: [id_empresa])
+}
+
+model acesso_perfil_tela {
+  id_acesso_perfil_tela Int     @id @default(autoincrement())
+  hash_registro         String? @db.VarChar(32)
+  id_perfil             Int
+  id_tela               Int
+
+  acesso_visual    Boolean @default(false)
+  acesso_edicao    Boolean @default(false)
+  acesso_alteracao Boolean @default(false)
+  acesso_criacao   Boolean @default(false)
+  acesso_exclusao  Boolean @default(false)
+  acesso_impressao Boolean @default(false)
+
+  data_inclusao           DateTime                  @db.Timestamp(0)
+  user_inclusao           Int
+  data_alteracao          DateTime                  @db.Timestamp(0)
+  user_alteracao          Int
+  ind_ativo               Boolean                   @default(false)
+  acesso_tela             acesso_tela               @relation(fields: [id_tela], references: [id_acesso_tela])
+  acesso_acao_tela_perfil acesso_acao_tela_perfil[]
+}
+
+model acesso_usuario_perfil {
+  id_acesso_usuario_perfil Int            @id @default(autoincrement())
+  hash_registro            String?        @db.VarChar(32)
+  id_acesso_usuario        Int
+  id_perfil                Int
+  id_empresa               Int
+  data_inclusao            DateTime       @db.Timestamp(0)
+  user_inclusao            Int
+  data_alteracao           DateTime       @db.Timestamp(0)
+  user_alteracao           Int
+  ind_ativo                Boolean        @default(true)
+  ind_excluido             Boolean        @default(false)
+  ind_bloqueado            Boolean        @default(false)
+  empresa                  empresa        @relation(fields: [id_empresa], references: [id_empresa])
+  usuario                  acesso_usuario @relation(fields: [id_acesso_usuario], references: [id_usuario])
+  perfil                   acesso_perfil  @relation(fields: [id_perfil], references: [id_perfil])
+}
+
 model acesso_usuario {
-  id_usuario           Int       @id @default(autoincrement())
-  hash_registro        String?   @db.VarChar(32)
-  nome_usuario         String?   @db.VarChar(60)
-  login_usuario        String?   @db.VarChar(60)
-  senha_usuario        String?   @db.VarChar(150)
-  id_lead              Int?
-  id_pessoa            Int?
-  data_inclusao        DateTime  @db.Timestamp(0)
-  user_inclusao        Int
-  data_alteracao       DateTime  @db.Timestamp(0)
-  user_alteracao       Int
-  ind_bloqueado        Int       @default(0)
-  ind_ativo            Int       @default(0)
-  ind_expira_senha     Int       @default(0)
-  data_hora_bloqueio   DateTime? @db.Timestamp(0)
-  data_hora_inativa    DateTime? @db.Timestamp(0)
-  data_hora_expira     DateTime? @db.Timestamp(0)
-  hash_senha           String?   @db.VarChar(32)
-  data_alteracao_senha DateTime? @db.Timestamp(0)
-  data_inclusao_senha  DateTime? @db.Timestamp(0)
-  filtros_coluna       Json?
+  id_usuario             Int                      @id @default(autoincrement())
+  hash_registro          String?                  @db.VarChar(32)
+  nome_usuario           String?                  @db.VarChar(60)
+  login_usuario          String?                  @db.VarChar(60)
+  senha_usuario          String?                  @db.VarChar(150)
+  id_lead                Int?
+  id_pessoa              Int?
+  data_inclusao          DateTime                 @db.Timestamp(0)
+  user_inclusao          Int
+  data_alteracao         DateTime                 @db.Timestamp(0)
+  user_alteracao         Int
+  ind_bloqueado          Boolean                  @default(false)
+  ind_ativo              Boolean                  @default(false)
+  ind_expira_senha       Boolean                  @default(false)
+  data_hora_bloqueio     DateTime?                @db.Timestamp(0)
+  data_hora_inativa      DateTime?                @db.Timestamp(0)
+  data_hora_expira       DateTime?                @db.Timestamp(0)
+  hash_senha             String?                  @db.VarChar(32)
+  data_alteracao_senha   DateTime?                @db.Timestamp(0)
+  data_inclusao_senha    DateTime?                @db.Timestamp(0)
+  filtros_coluna         Json?
+  acesso_usuario_empresa acesso_usuario_empresa[]
+  acesso_usuario_perfil  acesso_usuario_perfil[]
+}
+
+model acesso_usuario_empresa {
+  id_acesso_usuario_empresa Int      @id @default(autoincrement())
+  hash_registro             String?  @db.VarChar(32)
+  id_usuario                Int
+  id_empresa                Int
+  data_inclusao             DateTime @db.Timestamp(0)
+  user_inclusao             Int
+  data_alteracao            DateTime @db.Timestamp(0)
+  user_alteracao            Int
+  ind_ativo                 Boolean  @default(false)
+
+  empresa empresa        @relation(fields: [id_empresa], references: [id_empresa])
+  usuario acesso_usuario @relation(fields: [id_usuario], references: [id_usuario])
+}
+
+model empresa {
+  id_empresa         Int     @id @default(autoincrement())
+  hash_registro      String? @db.VarChar(32)
+  nome_empresa       String? @db.VarChar(100)
+  cnpj_empresa       String? @db.VarChar(14)
+  cnes_empresa       String? @db.VarChar(15)
+  possui_rad_sistema Int     @default(0)
+
+  data_inclusao          DateTime                 @db.Timestamp(0)
+  user_inclusao          Int
+  data_alteracao         DateTime                 @db.Timestamp(0)
+  user_alteracao         Int
+  nome_fantasia          String?                  @db.VarChar(100)
+  ind_ativo              Boolean                  @default(false)
+  cpf_valido             Boolean                  @default(false)
+  unidade                unidade[]
+  acesso_usuario_empresa acesso_usuario_empresa[]
+  acesso_usuario_perfil  acesso_usuario_perfil[]
+  acesso_perfil          acesso_perfil[]
+}
+
+model unidade {
+  id_unidade    Int     @id @default(autoincrement())
+  hash_registro String? @db.VarChar(32)
+  nome_unidade  String? @db.VarChar(100)
+  nome_fantasia String? @db.VarChar(100)
+  longitude     String? @db.VarChar(100)
+  latitude      String? @db.VarChar(100)
+  cnpj_unidade  String? @db.VarChar(14)
+  cnes_unidade  String? @db.VarChar(15)
+
+  data_inclusao  DateTime @db.Timestamp(0)
+  user_inclusao  Int
+  data_alteracao DateTime @db.Timestamp(0)
+  user_alteracao Int
+  ind_ativo      Boolean  @default(false)
+
+  empresa_id Int
+  empresa    empresa? @relation(fields: [empresa_id], references: [id_empresa])
 }
