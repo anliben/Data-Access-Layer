@@ -1,0 +1,23 @@
+{
+  "name": "data-access-layer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "tsc && node src/copyFile.js && npx prisma generate",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "update": "git pull && npx prisma db pull --force && git add . && git commit -m \"alter schema\" && git push"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.12.11",
+    "prisma": "^5.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.14.0"
+  }
+}
