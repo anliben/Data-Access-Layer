@@ -97,6 +97,7 @@ model acesso_tela {
   acesso_modulo      acesso_modulo        @relation(fields: [id_modulo], references: [id_acesso_modulo], onDelete: NoAction, onUpdate: NoAction)
   acesso_perfil_tela acesso_perfil_tela[]
   acesso_acao_tela   acesso_acao_tela[]
+  aux_hint_tela      aux_hint_tela[]
 }
 
 model acesso_acao_tela_perfil {
@@ -379,4 +380,13 @@ model unidade {
   empresa_id      Int
   empresa         empresa?      @relation(fields: [empresa_id], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
   erp_notificacao notificacao[]
+}
+
+model aux_hint_tela {
+  id_hint_tela  Int          @id @default(autoincrement())
+  hash_registro String?      @db.VarChar(32)
+  campo_tela    String?      @db.VarChar(100)
+  id_tela       Int?
+  hint          String?      @db.VarChar(100)
+  acesso_tela   acesso_tela? @relation(fields: [id_tela], references: [id_tela], onDelete: NoAction, onUpdate: NoAction)
 }
