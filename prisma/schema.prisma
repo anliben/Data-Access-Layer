@@ -21,10 +21,11 @@ model acesso_acao_tipo_componente {
 }
 
 model acesso_acao {
-  id_acesso_acao                          Int                         @id @default(autoincrement())
+  id_acao                                 Int                         @id @default(autoincrement())
   hash_registro                           String?                     @db.VarChar(32)
   nome_acao                               String?                     @db.VarChar(100)
   ind_ativo                               Boolean                     @default(false)
+  descricao                               String?                     @db.VarChar(100)
   data_inclusao                           DateTime                    @db.Timestamp(0)
   user_inclusao                           Int
   data_alteracao                          DateTime                    @db.Timestamp(0)
@@ -60,9 +61,9 @@ model acesso_acao_tela {
   user_inclusao                           Int
   data_alteracao                          DateTime                  @db.Timestamp(0)
   user_alteracao                          Int
-  acesso_acao                             acesso_acao               @relation(fields: [id_acao], references: [id_acesso_acao])
-  acesso_acao_tela_perfil                 acesso_acao_tela_perfil[]
+  acesso_acao                             acesso_acao?              @relation(fields: [id_acao], references: [id_acao], onDelete: NoAction, onUpdate: NoAction)
   acesso_tela                             acesso_tela?              @relation(fields: [id_tela], references: [id_tela], onDelete: NoAction, onUpdate: NoAction)
+  acesso_acao_tela_perfil                 acesso_acao_tela_perfil[]
   acesso_perfil_acao                      acesso_perfil_acao?       @relation(fields: [acesso_perfil_acaoId_acesso_perfil_acao], references: [id_acesso_perfil_acao])
   acesso_perfil_acaoId_acesso_perfil_acao Int?
 }
