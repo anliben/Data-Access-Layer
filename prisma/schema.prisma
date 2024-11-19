@@ -61,8 +61,8 @@ model acesso_acao_tela {
   data_alteracao                          DateTime                  @db.Timestamp(0)
   user_alteracao                          Int
   acesso_acao                             acesso_acao               @relation(fields: [id_acao], references: [id_acesso_acao])
-  acesso_tela                             acesso_tela               @relation(fields: [id_tela], references: [id_acesso_tela])
   acesso_acao_tela_perfil                 acesso_acao_tela_perfil[]
+  acesso_tela                             acesso_tela?              @relation(fields: [id_tela], references: [id_tela], onDelete: NoAction, onUpdate: NoAction)
   acesso_perfil_acao                      acesso_perfil_acao?       @relation(fields: [acesso_perfil_acaoId_acesso_perfil_acao], references: [id_acesso_perfil_acao])
   acesso_perfil_acaoId_acesso_perfil_acao Int?
 }
@@ -80,7 +80,7 @@ model acesso_modulo {
 }
 
 model acesso_tela {
-  id_acesso_tela     Int                  @id @default(autoincrement())
+  id_tela            Int                  @id @default(autoincrement())
   hash_registro      String?              @db.VarChar(32)
   nome_tela          String?              @db.VarChar(100)
   ind_pesquisa       Boolean              @default(false)
@@ -146,8 +146,9 @@ model acesso_perfil_tela {
   data_alteracao          DateTime                  @db.Timestamp(0)
   user_alteracao          Int
   ind_ativo               Boolean                   @default(false)
-  acesso_tela             acesso_tela               @relation(fields: [id_tela], references: [id_acesso_tela])
   acesso_acao_tela_perfil acesso_acao_tela_perfil[]
+  acesso_tela             acesso_tela?              @relation(fields: [acesso_telaId_tela], references: [id_tela])
+  acesso_telaId_tela      Int?
 }
 
 model acesso_usuario_perfil {
