@@ -359,6 +359,7 @@ model empresa {
   acesso_perfil          acesso_perfil[]
   empresa_setor          empresa_setor[]
   erp_notificacao        notificacao[]
+  aux_parametro_valor    aux_parametro_valor[]
 }
 
 model unidade {
@@ -389,4 +390,58 @@ model aux_hint_tela {
   id_tela       Int?
   hint          String?      @db.VarChar(100)
   acesso_tela   acesso_tela? @relation(fields: [id_tela], references: [id_tela], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model aux_parametro {
+  id_parametro        Int                   @id @default(autoincrement())
+  hash_registro       String?               @db.Char(32)
+  nome_parametro      String?               @db.VarChar(100)
+  id_parametro_grupo  Int?
+  data_inclusao       DateTime              @default(now()) @db.Timestamp(6)
+  user_inclusao       Int
+  data_alteracao      DateTime              @default(now()) @db.Timestamp(6)
+  user_alteracao      Decimal               @db.Decimal
+  aux_parametro_grupo aux_parametro_grupo?  @relation(fields: [id_parametro_grupo], references: [id_parametro_grupo], onDelete: NoAction, onUpdate: NoAction)
+  aux_parametro_chave aux_parametro_chave[]
+}
+
+model aux_parametro_chave {
+  id_parametro_chave   Int                   @id @default(autoincrement())
+  hash_registro        String?               @db.Char(32)
+  id_parametro         Int?
+  nome_parametro_chave String?               @db.VarChar(100)
+  data_inclusao        DateTime              @default(now()) @db.Timestamp(6)
+  user_inclusao        Int
+  data_alteracao       DateTime              @default(now()) @db.Timestamp(6)
+  user_alteracao       Decimal               @db.Decimal
+  desc_parametro_chave String?               @db.VarChar(250)
+  aux_parametro        aux_parametro?        @relation(fields: [id_parametro], references: [id_parametro], onDelete: NoAction, onUpdate: NoAction)
+  aux_parametro_valor  aux_parametro_valor[]
+}
+
+model aux_parametro_grupo {
+  id_parametro_grupo   Int             @id @default(autoincrement())
+  hash_registro        String?         @db.Char(32)
+  nome_parametro_grupo String?         @db.VarChar(100)
+  data_inclusao        DateTime        @default(now()) @db.Timestamp(6)
+  user_inclusao        Int
+  data_alteracao       DateTime        @default(now()) @db.Timestamp(6)
+  user_alteracao       Decimal         @db.Decimal
+  aux_parametro        aux_parametro[]
+}
+
+model aux_parametro_valor {
+  id_parametro_valor  Int                  @id @default(autoincrement())
+  hash_registro       String?              @db.Char(32)
+  id_parametro_chave  Int?
+  id_empresa          Int?
+  valor_parametro     String?              @db.VarChar(1000)
+  data_inclusao       DateTime             @default(now()) @db.Timestamp(6)
+  user_inclusao       Int
+  data_alteracao      DateTime             @default(now()) @db.Timestamp(6)
+  user_alteracao      Decimal              @db.Decimal
+  empresa             empresa?             @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
+  aux_parametro_chave aux_parametro_chave? @relation(fields: [id_parametro_chave], references: [id_parametro_chave], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([id_parametro_chave, id_empresa], map: "aux_parametro_valor_unique")
 }
