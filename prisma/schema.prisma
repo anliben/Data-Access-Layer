@@ -21,21 +21,21 @@ model acesso_acao_tipo_componente {
 }
 
 model acesso_acao {
-  id_acao                                 Int                         @id @default(autoincrement())
-  hash_registro                           String?                     @db.VarChar(32)
-  nome_acao                               String?                     @db.VarChar(100)
-  ind_ativo                               Boolean                     @default(false)
-  descricao                               String?                     @db.VarChar(100)
-  data_inclusao                           DateTime                    @db.Timestamp(0)
+  id_acao                                 Int                          @id @default(autoincrement())
+  hash_registro                           String?                      @db.VarChar(32)
+  nome_acao                               String?                      @db.VarChar(100)
+  ind_ativo                               Boolean                      @default(false)
+  descricao                               String?                      @db.VarChar(100)
+  data_inclusao                           DateTime                     @db.Timestamp(0)
   user_inclusao                           Int
-  data_alteracao                          DateTime                    @db.Timestamp(0)
+  data_alteracao                          DateTime                     @db.Timestamp(0)
   user_alteracao                          Int
-  ind_acao_geral                          Boolean                     @default(false)
-  id_acao_tipo                            Int
-  nome_componente                         String?                     @db.VarChar(100)
-  acao_tipo_componente                    acesso_acao_tipo_componente @relation(fields: [id_acao_tipo], references: [id_acesso_acao_tipo_componente], onDelete: NoAction, onUpdate: NoAction)
+  ind_acao_geral                          Boolean?                     @default(false)
+  id_acao_tipo                            Int?
+  nome_componente                         String?                      @db.VarChar(100)
+  acao_tipo_componente                    acesso_acao_tipo_componente? @relation(fields: [id_acao_tipo], references: [id_acesso_acao_tipo_componente], onDelete: NoAction, onUpdate: NoAction)
   acesso_acao_tela                        acesso_acao_tela[]
-  acesso_perfil_acao                      acesso_perfil_acao?         @relation(fields: [acesso_perfil_acaoId_acesso_perfil_acao], references: [id_acesso_perfil_acao], onDelete: NoAction, onUpdate: NoAction)
+  acesso_perfil_acao                      acesso_perfil_acao?          @relation(fields: [acesso_perfil_acaoId_acesso_perfil_acao], references: [id_acesso_perfil_acao], onDelete: NoAction, onUpdate: NoAction)
   acesso_perfil_acaoId_acesso_perfil_acao Int?
 }
 
