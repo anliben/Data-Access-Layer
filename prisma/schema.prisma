@@ -33,9 +33,9 @@ model acesso_acao {
   ind_acao_geral                          Boolean                     @default(false)
   id_acao_tipo                            Int
   nome_componente                         String?                     @db.VarChar(100)
-  acao_tipo_componente                    acesso_acao_tipo_componente @relation(fields: [id_acao_tipo], references: [id_acesso_acao_tipo_componente])
+  acao_tipo_componente                    acesso_acao_tipo_componente @relation(fields: [id_acao_tipo], references: [id_acesso_acao_tipo_componente], onDelete: NoAction, onUpdate: NoAction)
   acesso_acao_tela                        acesso_acao_tela[]
-  acesso_perfil_acao                      acesso_perfil_acao?         @relation(fields: [acesso_perfil_acaoId_acesso_perfil_acao], references: [id_acesso_perfil_acao])
+  acesso_perfil_acao                      acesso_perfil_acao?         @relation(fields: [acesso_perfil_acaoId_acesso_perfil_acao], references: [id_acesso_perfil_acao], onDelete: NoAction, onUpdate: NoAction)
   acesso_perfil_acaoId_acesso_perfil_acao Int?
 }
 
@@ -64,7 +64,7 @@ model acesso_acao_tela {
   acesso_acao                             acesso_acao?              @relation(fields: [id_acao], references: [id_acao], onDelete: NoAction, onUpdate: NoAction)
   acesso_tela                             acesso_tela?              @relation(fields: [id_tela], references: [id_tela], onDelete: NoAction, onUpdate: NoAction)
   acesso_acao_tela_perfil                 acesso_acao_tela_perfil[]
-  acesso_perfil_acao                      acesso_perfil_acao?       @relation(fields: [acesso_perfil_acaoId_acesso_perfil_acao], references: [id_acesso_perfil_acao])
+  acesso_perfil_acao                      acesso_perfil_acao?       @relation(fields: [acesso_perfil_acaoId_acesso_perfil_acao], references: [id_acesso_perfil_acao], onDelete: NoAction, onUpdate: NoAction)
   acesso_perfil_acaoId_acesso_perfil_acao Int?
 }
 
@@ -94,7 +94,7 @@ model acesso_tela {
   user_inclusao      Int
   data_alteracao     DateTime             @db.Timestamp(0)
   user_alteracao     Int
-  acesso_modulo      acesso_modulo        @relation(fields: [id_modulo], references: [id_acesso_modulo])
+  acesso_modulo      acesso_modulo        @relation(fields: [id_modulo], references: [id_acesso_modulo], onDelete: NoAction, onUpdate: NoAction)
   acesso_perfil_tela acesso_perfil_tela[]
   acesso_acao_tela   acesso_acao_tela[]
 }
@@ -126,7 +126,7 @@ model acesso_perfil {
   data_alteracao        DateTime                @db.Timestamp(0)
   user_alteracao        Int
   acesso_usuario_perfil acesso_usuario_perfil[]
-  empresa               empresa                 @relation(fields: [id_empresa], references: [id_empresa])
+  empresa               empresa                 @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model acesso_perfil_tela {
@@ -148,26 +148,26 @@ model acesso_perfil_tela {
   user_alteracao          Int
   ind_ativo               Boolean                   @default(false)
   acesso_acao_tela_perfil acesso_acao_tela_perfil[]
-  acesso_tela             acesso_tela?              @relation(fields: [acesso_telaId_tela], references: [id_tela])
+  acesso_tela             acesso_tela?              @relation(fields: [acesso_telaId_tela], references: [id_tela], onDelete: NoAction, onUpdate: NoAction)
   acesso_telaId_tela      Int?
 }
 
 model acesso_usuario_perfil {
-  id_acesso_usuario_perfil Int            @id @default(autoincrement())
-  hash_registro            String?        @db.VarChar(32)
-  id_acesso_usuario        Int
+  id_acesso_usuario_perfil Int             @id @default(autoincrement())
+  hash_registro            String?         @db.VarChar(32)
+  id_usuario               Int
   id_perfil                Int
   id_empresa               Int
-  data_inclusao            DateTime       @db.Timestamp(0)
+  data_inclusao            DateTime        @db.Timestamp(0)
   user_inclusao            Int
-  data_alteracao           DateTime       @db.Timestamp(0)
+  data_alteracao           DateTime        @db.Timestamp(0)
   user_alteracao           Int
-  ind_ativo                Boolean        @default(true)
-  ind_excluido             Boolean        @default(false)
-  ind_bloqueado            Boolean        @default(false)
-  empresa                  empresa        @relation(fields: [id_empresa], references: [id_empresa])
-  usuario                  acesso_usuario @relation(fields: [id_acesso_usuario], references: [id_usuario])
-  perfil                   acesso_perfil  @relation(fields: [id_perfil], references: [id_perfil])
+  ind_ativo                Boolean         @default(true)
+  ind_excluido             Boolean         @default(false)
+  ind_bloqueado            Boolean         @default(false)
+  empresa                  empresa?        @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
+  acesso_perfil            acesso_perfil?  @relation(fields: [id_perfil], references: [id_perfil], onDelete: NoAction, onUpdate: NoAction)
+  acesso_usuario           acesso_usuario? @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model acesso_usuario {
@@ -194,6 +194,8 @@ model acesso_usuario {
   filtros_coluna         Json?
   acesso_usuario_empresa acesso_usuario_empresa[]
   acesso_usuario_perfil  acesso_usuario_perfil[]
+  pessoa                 pessoa?                  @relation(fields: [pessoaId_pessoa], references: [id_pessoa])
+  pessoaId_pessoa        Int?
 }
 
 model acesso_usuario_empresa {
@@ -207,8 +209,132 @@ model acesso_usuario_empresa {
   user_alteracao            Int
   ind_ativo                 Boolean  @default(false)
 
-  empresa empresa        @relation(fields: [id_empresa], references: [id_empresa])
-  usuario acesso_usuario @relation(fields: [id_usuario], references: [id_usuario])
+  empresa                       empresa        @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
+  usuario                       acesso_usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  empresa_setor                 empresa_setor? @relation(fields: [empresa_setorId_empresa_setor], references: [id_empresa_setor], onDelete: NoAction, onUpdate: NoAction)
+  empresa_setorId_empresa_setor Int?
+}
+
+model pessoa {
+  id_pessoa              Int                @id @default(autoincrement())
+  id_lead                Int?
+  hash_registro          String?            @db.Char(32)
+  nome_completo          String?            @db.VarChar(60)
+  nome_social            String?            @db.VarChar(60)
+  cpf_pessoa             String?            @unique(map: "crm_pessoa_cpf_pessoa_idx") @db.VarChar(11)
+  sexo_pessoa            String?            @db.Char(1)
+  id_genero              Int?
+  id_estado_civil        Int?
+  email_pessoa           String?            @db.VarChar(60)
+  nacionalidade          String?            @db.VarChar(40)
+  id_naturalidade        Int?
+  data_nascimento_pessoa DateTime?          @db.Date
+  data_inclusao          DateTime           @db.Timestamp(6)
+  user_inclusao          Int
+  data_alteracao         DateTime           @db.Timestamp(6)
+  user_alteracao         Int
+  ind_deficiente         Boolean            @default(false)
+  id_grau_escolaridade   Int?
+  cnpj_pessoa            String?            @db.VarChar(14)
+  razao_social           String?            @db.VarChar(100)
+  cargo_pessoa_juridica  String?            @db.VarChar(100)
+  id_raca_cor            Int?
+  ind_pessoa_juridica    Boolean            @default(false)
+  id_nacionalidade       Int?
+  nome_mae               String?            @db.VarChar(200)
+  nome_pai               String?            @db.VarChar(200)
+  acesso_usuario         acesso_usuario[]
+  notificacao            notificacao[]
+  pessoa_contato         pessoa_contato[]
+  pessoa_documento       pessoa_documento[]
+  pessoa_endereco        pessoa_endereco[]
+}
+
+model pessoa_contato {
+  id_pessoa_contato Int      @id @default(autoincrement())
+  hash_registro     String?  @db.Char(32)
+  id_pessoa         Int?
+  id_tipo_contato   Int?
+  num_ddi           Decimal? @default(55) @db.Decimal(3, 0)
+  num_ddd           Decimal? @db.Decimal(2, 0)
+  contato           String?  @db.VarChar(60)
+  pessoa            pessoa?  @relation(fields: [id_pessoa], references: [id_pessoa], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model pessoa_documento {
+  id_pessoa_documento Int       @id @default(autoincrement())
+  id_pessoa           Int?
+  id_tipo_documento   Int?
+  num_documento       String?   @db.VarChar(100)
+  data_emissao        DateTime? @db.Date
+  data_validade       DateTime? @db.Date
+  nome_complemento_1  String?   @db.VarChar(200)
+  nome_complemento_2  String?   @db.VarChar(200)
+  data_inclusao       DateTime  @db.Timestamp(6)
+  user_inclusao       Int
+  data_alteracao      DateTime  @db.Timestamp(6)
+  user_alteracao      Decimal   @db.Decimal
+  hash_registro       String?   @db.VarChar(32)
+  id_orgao_expedidor  BigInt?
+  id_estado_emissor   BigInt?
+  pessoa              pessoa?   @relation(fields: [id_pessoa], references: [id_pessoa], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model pessoa_endereco {
+  id_pessoa_endereco Int      @id @default(autoincrement())
+  id_pessoa          Int?
+  id_tipo_endereco   Int?
+  cep_endereco       String?  @db.VarChar(8)
+  logr_endereco      String?  @db.VarChar(60)
+  num_logr_endereco  String?  @db.VarChar(50)
+  comp_logr_endereco String?  @db.VarChar(50)
+  bairro_endereco    String?  @db.VarChar(100)
+  id_municipio       Int?
+  data_inclusao      DateTime @db.Timestamp(6)
+  user_inclusao      Int
+  data_alteracao     DateTime @db.Timestamp(6)
+  user_alteracao     Decimal  @db.Decimal
+  hash_registro      String?  @db.Char(32)
+  id_estado          Int?
+  uf                 String?  @db.VarChar(2)
+  municipio          String?  @db.VarChar(100)
+  tipo_endereco      String?  @db.VarChar(100)
+  pessoa             pessoa?  @relation(fields: [id_pessoa], references: [id_pessoa], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model notificacao {
+  id_notificacao   Int            @id @default(autoincrement())
+  hash_registro    String?        @db.VarChar(32)
+  assunto          String         @db.VarChar(200)
+  mensagem         String?        @db.VarChar(2000)
+  data_notificar   DateTime       @default(now()) @db.Timestamp(6)
+  id_empresa_setor Int?
+  id_pessoa        Int?
+  status           String?        @db.Char(1)
+  data_inclusao    DateTime       @default(now()) @db.Timestamp(6)
+  user_inclusao    Int
+  data_alteracao   DateTime       @default(now()) @db.Timestamp(6)
+  user_alteracao   Decimal        @db.Decimal
+  id_empresa       Int?
+  id_unidade       Int?
+  empresa          empresa?       @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
+  empresa_setor    empresa_setor? @relation(fields: [id_empresa_setor], references: [id_empresa_setor], onDelete: NoAction, onUpdate: NoAction)
+  pessoa           pessoa?        @relation(fields: [id_pessoa], references: [id_pessoa], onDelete: NoAction, onUpdate: NoAction)
+  unidade          unidade?       @relation(fields: [id_unidade], references: [id_unidade], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model empresa_setor {
+  id_empresa_setor       Int                      @id @default(autoincrement())
+  hash_registro          String?                  @db.VarChar(32)
+  id_empresa             Int
+  nome_setor             String?                  @db.VarChar(60)
+  data_inclusao          DateTime                 @default(now()) @db.Timestamp(6)
+  user_inclusao          Int
+  data_alteracao         DateTime                 @default(now()) @db.Timestamp(6)
+  user_alteracao         Decimal                  @db.Decimal
+  acesso_usuario_empresa acesso_usuario_empresa[]
+  empresa                empresa?                 @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
+  erp_notificacao        notificacao[]
 }
 
 model empresa {
@@ -230,6 +356,8 @@ model empresa {
   acesso_usuario_empresa acesso_usuario_empresa[]
   acesso_usuario_perfil  acesso_usuario_perfil[]
   acesso_perfil          acesso_perfil[]
+  empresa_setor          empresa_setor[]
+  erp_notificacao        notificacao[]
 }
 
 model unidade {
@@ -248,6 +376,7 @@ model unidade {
   user_alteracao Int
   ind_ativo      Boolean  @default(false)
 
-  empresa_id Int
-  empresa    empresa? @relation(fields: [empresa_id], references: [id_empresa])
+  empresa_id      Int
+  empresa         empresa?      @relation(fields: [empresa_id], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
+  erp_notificacao notificacao[]
 }
