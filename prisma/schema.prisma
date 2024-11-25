@@ -9,7 +9,7 @@ datasource db {
 }
 
 model acesso_acao_tipo_componente {
-  id_acesso_acao_tipo_componente Int      @id @default(autoincrement())
+  id_acao_tipo_componente Int      @id @default(autoincrement())
   hash_registro                  String?  @db.VarChar(32)
   nome_tipo                      String?  @db.VarChar(100)
   data_inclusao                  DateTime @db.Timestamp(0)
@@ -33,7 +33,7 @@ model acesso_acao {
   ind_acao_geral       Boolean?                     @default(false)
   id_acao_tipo         Int?
   nome_componente      String?                      @db.VarChar(100)
-  acao_tipo_componente acesso_acao_tipo_componente? @relation(fields: [id_acao_tipo], references: [id_acesso_acao_tipo_componente], onDelete: NoAction, onUpdate: NoAction)
+  acao_tipo_componente acesso_acao_tipo_componente? @relation(fields: [id_acao_tipo], references: [id_acao_tipo_componente], onDelete: NoAction, onUpdate: NoAction)
   acesso_acao_tela     acesso_acao_tela[]
   acesso_perfil_acao   acesso_perfil_acao[]
 }
@@ -66,7 +66,7 @@ model acesso_acao_tela {
 }
 
 model acesso_modulo {
-  id_acesso_modulo Int           @id @default(autoincrement())
+  id_modulo Int           @id @default(autoincrement())
   hash_registro    String?       @db.VarChar(32)
   nome_modulo      String?       @db.VarChar(100)
   ativo            Boolean       @default(false)
@@ -91,10 +91,11 @@ model acesso_tela {
   user_inclusao      Int
   data_alteracao     DateTime             @db.Timestamp(0)
   user_alteracao     Int
-  acesso_modulo      acesso_modulo        @relation(fields: [id_modulo], references: [id_acesso_modulo], onDelete: NoAction, onUpdate: NoAction)
+  acesso_modulo      acesso_modulo        @relation(fields: [id_modulo], references: [id_modulo], onDelete: NoAction, onUpdate: NoAction)
   acesso_perfil_tela acesso_perfil_tela[]
   acesso_acao_tela   acesso_acao_tela[]
   aux_hint_tela      aux_hint_tela[]
+  acesso_menu        acesso_menu[]
 }
 
 model acesso_acao_tela_perfil {
@@ -153,7 +154,7 @@ model acesso_perfil_tela {
 }
 
 model acesso_usuario_perfil {
-  id_acesso_usuario_perfil Int             @id @default(autoincrement())
+  id_usuario_perfil Int             @id @default(autoincrement())
   hash_registro            String?         @db.VarChar(32)
   id_usuario               Int
   id_perfil                Int
@@ -199,7 +200,7 @@ model acesso_usuario {
 }
 
 model acesso_usuario_empresa {
-  id_acesso_usuario_empresa Int      @id @default(autoincrement())
+  id_usuario_empresa Int      @id @default(autoincrement())
   hash_registro             String?  @db.VarChar(32)
   id_usuario                Int
   id_empresa                Int
@@ -443,4 +444,22 @@ model aux_parametro_valor {
   aux_parametro_chave aux_parametro_chave? @relation(fields: [id_parametro_chave], references: [id_parametro_chave], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([id_parametro_chave, id_empresa], map: "aux_parametro_valor_unique")
+}
+
+model acesso_menu {
+  id_menu           Int           @id @default(autoincrement())
+  hash_registro     String?       @db.Char(32)
+  id_menu_pai       Int?
+  id_tela           Int?
+  nome_menu         String?       @db.VarChar(30)
+  ind_ativo         Int?          @default(1)
+  data_inclusao     DateTime      @default(now()) @db.Timestamp(6)
+  user_inclusao     Int
+  data_alteracao    DateTime      @default(now()) @db.Timestamp(6)
+  user_alteracao    Int
+  rota_menu         String?       @db.VarChar(35)
+  icone_menu        String?       @db.VarChar(50)
+  acesso_menu       acesso_menu?  @relation("acesso_menuToacesso_menu", fields: [id_menu_pai], references: [id_menu], onDelete: NoAction, onUpdate: NoAction)
+  other_acesso_menu acesso_menu[] @relation("acesso_menuToacesso_menu")
+  acesso_tela       acesso_tela?  @relation(fields: [id_tela], references: [id_tela], onDelete: NoAction, onUpdate: NoAction)
 }
