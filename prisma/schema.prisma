@@ -21,51 +21,48 @@ model acesso_acao_tipo_componente {
 }
 
 model acesso_acao {
-  id_acao                                 Int                          @id @default(autoincrement())
-  hash_registro                           String?                      @db.VarChar(32)
-  nome_acao                               String?                      @db.VarChar(100)
-  ind_ativo                               Boolean                      @default(false)
-  descricao                               String?                      @db.VarChar(100)
-  data_inclusao                           DateTime                     @db.Timestamp(0)
-  user_inclusao                           Int
-  data_alteracao                          DateTime                     @db.Timestamp(0)
-  user_alteracao                          Int
-  ind_acao_geral                          Boolean?                     @default(false)
-  id_acao_tipo                            Int?
-  nome_componente                         String?                      @db.VarChar(100)
-  acao_tipo_componente                    acesso_acao_tipo_componente? @relation(fields: [id_acao_tipo], references: [id_acesso_acao_tipo_componente], onDelete: NoAction, onUpdate: NoAction)
-  acesso_acao_tela                        acesso_acao_tela[]
-  acesso_perfil_acao                      acesso_perfil_acao?          @relation(fields: [acesso_perfil_acaoId_acesso_perfil_acao], references: [id_acesso_perfil_acao], onDelete: NoAction, onUpdate: NoAction)
-  acesso_perfil_acaoId_acesso_perfil_acao Int?
+  id_acao              Int                          @id @default(autoincrement())
+  hash_registro        String?                      @db.VarChar(32)
+  nome_acao            String?                      @db.VarChar(100)
+  ind_ativo            Boolean                      @default(false)
+  descricao            String?                      @db.VarChar(100)
+  data_inclusao        DateTime                     @db.Timestamp(0)
+  user_inclusao        Int
+  data_alteracao       DateTime                     @db.Timestamp(0)
+  user_alteracao       Int
+  ind_acao_geral       Boolean?                     @default(false)
+  id_acao_tipo         Int?
+  nome_componente      String?                      @db.VarChar(100)
+  acao_tipo_componente acesso_acao_tipo_componente? @relation(fields: [id_acao_tipo], references: [id_acesso_acao_tipo_componente], onDelete: NoAction, onUpdate: NoAction)
+  acesso_acao_tela     acesso_acao_tela[]
+  acesso_perfil_acao   acesso_perfil_acao[]
 }
 
 model acesso_perfil_acao {
-  id_acesso_perfil_acao Int      @id @default(autoincrement())
-  hash_registro         String?  @db.VarChar(32)
-  id_perfil             Int
-  id_acao               Int
-  data_inclusao         DateTime @db.Timestamp(0)
-  user_inclusao         Int
+  id_perfil_acao Int      @id @default(autoincrement())
+  hash_registro  String?  @db.VarChar(32)
+  id_perfil      Int
+  id_acao        Int
+  data_inclusao  DateTime @db.Timestamp(0)
+  user_inclusao  Int
 
-  acesso_acao      acesso_acao[]
-  acesso_acao_tela acesso_acao_tela[]
+  acesso_acao   acesso_acao?   @relation(fields: [id_acao], references: [id_acao], onDelete: NoAction, onUpdate: NoAction)
+  acesso_perfil acesso_perfil? @relation(fields: [id_perfil], references: [id_perfil], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model acesso_acao_tela {
-  id_acesso_acao_tela                     Int                       @id @default(autoincrement())
-  hash_registro                           String?                   @db.VarChar(32)
-  id_acao                                 Int
-  id_tela                                 Int
-  descricao                               String?                   @db.VarChar(100)
-  data_inclusao                           DateTime                  @db.Timestamp(0)
-  user_inclusao                           Int
-  data_alteracao                          DateTime                  @db.Timestamp(0)
-  user_alteracao                          Int
-  acesso_acao                             acesso_acao?              @relation(fields: [id_acao], references: [id_acao], onDelete: NoAction, onUpdate: NoAction)
-  acesso_tela                             acesso_tela?              @relation(fields: [id_tela], references: [id_tela], onDelete: NoAction, onUpdate: NoAction)
-  acesso_acao_tela_perfil                 acesso_acao_tela_perfil[]
-  acesso_perfil_acao                      acesso_perfil_acao?       @relation(fields: [acesso_perfil_acaoId_acesso_perfil_acao], references: [id_acesso_perfil_acao], onDelete: NoAction, onUpdate: NoAction)
-  acesso_perfil_acaoId_acesso_perfil_acao Int?
+  id_acao_tela            Int                       @id @default(autoincrement())
+  hash_registro           String?                   @db.VarChar(32)
+  id_acao                 Int
+  id_tela                 Int
+  descricao_acao          String?                   @db.VarChar(100)
+  data_inclusao           DateTime                  @db.Timestamp(0)
+  user_inclusao           Int
+  data_alteracao          DateTime                  @db.Timestamp(0)
+  user_alteracao          Int
+  acesso_acao             acesso_acao?              @relation(fields: [id_acao], references: [id_acao], onDelete: NoAction, onUpdate: NoAction)
+  acesso_tela             acesso_tela?              @relation(fields: [id_tela], references: [id_tela], onDelete: NoAction, onUpdate: NoAction)
+  acesso_acao_tela_perfil acesso_acao_tela_perfil[]
 }
 
 model acesso_modulo {
@@ -101,40 +98,42 @@ model acesso_tela {
 }
 
 model acesso_acao_tela_perfil {
-  id_acesso_acao_tela_perfil              Int                 @id @default(autoincrement())
-  hash_registro                           String?             @db.VarChar(32)
-  id_perfil                               Int
-  id_acao_tela                            Int
-  ind_ativo                               Boolean             @default(false)
-  data_inclusao                           DateTime
-  user_inclusao                           Int
-  data_alteracao                          DateTime
-  user_alteracao                          Int
-  acesso_perfil_tela                      acesso_perfil_tela? @relation(fields: [acesso_perfil_telaId_acesso_perfil_tela], references: [id_acesso_perfil_tela])
-  acesso_perfil_telaId_acesso_perfil_tela Int?
-  acesso_acao_tela                        acesso_acao_tela?   @relation(fields: [acesso_acao_telaId_acesso_acao_tela], references: [id_acesso_acao_tela])
-  acesso_acao_telaId_acesso_acao_tela     Int?
+  id_acao_perfil Int      @id @default(autoincrement())
+  hash_registro  String?  @db.VarChar(32)
+  id_acao_tela   Int
+  id_perfil      Int
+  data_inclusao  DateTime @default(now())
+  user_inclusao  Int
+  data_alteracao DateTime @default(now())
+  user_alteracao Int
+
+  acesso_acao_tela                 acesso_acao_tela?   @relation(fields: [id_acao_tela], references: [id_acao_tela], onDelete: NoAction, onUpdate: NoAction)
+  acesso_perfil                    acesso_perfil?      @relation(fields: [id_perfil], references: [id_perfil], onDelete: NoAction, onUpdate: NoAction)
+  acesso_perfil_tela               acesso_perfil_tela? @relation(fields: [acesso_perfil_telaId_perfil_tela], references: [id_perfil_tela])
+  acesso_perfil_telaId_perfil_tela Int?
 }
 
 model acesso_perfil {
-  id_perfil             Int                     @id @default(autoincrement())
-  hash_registro         String?                 @db.VarChar(32)
-  nome_perfil           String?                 @db.VarChar(100)
-  id_empresa            Int
-  ind_ativo             Boolean                 @default(false)
-  data_inclusao         DateTime                @db.Timestamp(0)
-  user_inclusao         Int
-  data_alteracao        DateTime                @db.Timestamp(0)
-  user_alteracao        Int
-  acesso_usuario_perfil acesso_usuario_perfil[]
-  empresa               empresa                 @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
+  id_perfil               Int                       @id @default(autoincrement())
+  hash_registro           String?                   @db.VarChar(32)
+  nome_perfil             String?                   @db.VarChar(100)
+  id_empresa              Int
+  ind_ativo               Boolean                   @default(false)
+  data_inclusao           DateTime                  @db.Timestamp(0)
+  user_inclusao           Int
+  data_alteracao          DateTime                  @db.Timestamp(0)
+  user_alteracao          Int
+  acesso_usuario_perfil   acesso_usuario_perfil[]
+  empresa                 empresa                   @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
+  acesso_perfil_acao      acesso_perfil_acao[]
+  acesso_acao_tela_perfil acesso_acao_tela_perfil[]
 }
 
 model acesso_perfil_tela {
-  id_acesso_perfil_tela Int     @id @default(autoincrement())
-  hash_registro         String? @db.VarChar(32)
-  id_perfil             Int
-  id_tela               Int
+  id_perfil_tela Int     @id @default(autoincrement())
+  hash_registro  String? @db.VarChar(32)
+  id_perfil      Int
+  id_tela        Int
 
   acesso_visual    Boolean @default(false)
   acesso_edicao    Boolean @default(false)
