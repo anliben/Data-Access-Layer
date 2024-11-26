@@ -229,7 +229,6 @@ model acesso_usuario_empresa {
 
 model pessoa {
   id_pessoa              Int                @id @default(autoincrement())
-  id_lead                Int?
   hash_registro          String?            @db.Char(32)
   nome_completo          String?            @db.VarChar(60)
   nome_social            String?            @db.VarChar(60)
