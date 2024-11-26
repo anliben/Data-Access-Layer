@@ -350,13 +350,12 @@ model empresa_setor {
 }
 
 model empresa {
-  id_empresa         Int     @id @default(autoincrement())
-  hash_registro      String? @db.VarChar(32)
-  nome_empresa       String? @db.VarChar(100)
-  cnpj_empresa       String? @db.VarChar(14)
-  cnes_empresa       String? @db.VarChar(15)
-  possui_rad_sistema Int     @default(0)
-
+  id_empresa             Int                      @id @default(autoincrement())
+  hash_registro          String?                  @db.VarChar(32)
+  nome_empresa           String?                  @db.VarChar(100)
+  cnpj_empresa           String?                  @db.VarChar(14)
+  cnes_empresa           String?                  @db.VarChar(15)
+  possui_rad_sistema     Int                      @default(0)
   data_inclusao          DateTime                 @db.Timestamp(0)
   user_inclusao          Int
   data_alteracao         DateTime                 @db.Timestamp(0)
