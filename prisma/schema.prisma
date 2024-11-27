@@ -171,18 +171,6 @@ model acesso_usuario_perfil {
   acesso_usuario    acesso_usuario? @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model acesso_usuario_unidade {
-  id_usuario_unidade Int             @id @default(autoincrement())
-  id_usuario         Int?
-  id_unidade         Int?
-  data_inclusao      DateTime        @default(now()) @db.Timestamp(6)
-  user_inclusao      Int
-  data_alteracao     DateTime        @default(now()) @db.Timestamp(6)
-  user_alteracao     Int
-  unidade            unidade?        @relation(fields: [id_unidade], references: [id_unidade], onDelete: NoAction, onUpdate: NoAction)
-  acesso_usuario     acesso_usuario? @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
-}
-
 model acesso_usuario {
   id_usuario             Int                      @id @default(autoincrement())
   hash_registro          String?                  @db.VarChar(32)
@@ -207,7 +195,6 @@ model acesso_usuario {
   pessoa                 pessoa?                  @relation(fields: [id_pessoa], references: [id_pessoa], onDelete: NoAction, onUpdate: NoAction)
   acesso_usuario_empresa acesso_usuario_empresa[]
   acesso_usuario_perfil  acesso_usuario_perfil[]
-  acesso_usuario_unidade acesso_usuario_unidade[]
 }
 
 model acesso_usuario_empresa {
@@ -223,8 +210,6 @@ model acesso_usuario_empresa {
 
   empresa                       empresa        @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
   usuario                       acesso_usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
-  empresa_setor                 empresa_setor? @relation(fields: [empresa_setorId_empresa_setor], references: [id_empresa_setor], onDelete: NoAction, onUpdate: NoAction)
-  empresa_setorId_empresa_setor Int?
 }
 
 model pessoa {
@@ -319,7 +304,6 @@ model notificacao {
   assunto          String         @db.VarChar(200)
   mensagem         String?        @db.VarChar(2000)
   data_notificar   DateTime       @default(now()) @db.Timestamp(6)
-  id_empresa_setor Int?
   id_pessoa        Int?
   status           String?        @db.Char(1)
   data_inclusao    DateTime       @default(now()) @db.Timestamp(6)
@@ -327,25 +311,8 @@ model notificacao {
   data_alteracao   DateTime       @default(now()) @db.Timestamp(6)
   user_alteracao   Decimal        @db.Decimal
   id_empresa       Int?
-  id_unidade       Int?
   empresa          empresa?       @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
-  empresa_setor    empresa_setor? @relation(fields: [id_empresa_setor], references: [id_empresa_setor], onDelete: NoAction, onUpdate: NoAction)
   pessoa           pessoa?        @relation(fields: [id_pessoa], references: [id_pessoa], onDelete: NoAction, onUpdate: NoAction)
-  unidade          unidade?       @relation(fields: [id_unidade], references: [id_unidade], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model empresa_setor {
-  id_empresa_setor       Int                      @id @default(autoincrement())
-  hash_registro          String?                  @db.VarChar(32)
-  id_empresa             Int
-  nome_setor             String?                  @db.VarChar(60)
-  data_inclusao          DateTime                 @default(now()) @db.Timestamp(6)
-  user_inclusao          Int
-  data_alteracao         DateTime                 @default(now()) @db.Timestamp(6)
-  user_alteracao         Decimal                  @db.Decimal
-  acesso_usuario_empresa acesso_usuario_empresa[]
-  empresa                empresa?                 @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
-  erp_notificacao        notificacao[]
 }
 
 model empresa {
@@ -362,35 +329,11 @@ model empresa {
   nome_fantasia          String?                  @db.VarChar(100)
   ind_ativo              Boolean                  @default(false)
   cpf_valido             Boolean                  @default(false)
-  unidade                unidade[]
   acesso_usuario_empresa acesso_usuario_empresa[]
   acesso_usuario_perfil  acesso_usuario_perfil[]
   acesso_perfil          acesso_perfil[]
-  empresa_setor          empresa_setor[]
   erp_notificacao        notificacao[]
   aux_parametro_valor    aux_parametro_valor[]
-}
-
-model unidade {
-  id_unidade    Int     @id @default(autoincrement())
-  hash_registro String? @db.VarChar(32)
-  nome_unidade  String? @db.VarChar(100)
-  nome_fantasia String? @db.VarChar(100)
-  longitude     String? @db.VarChar(100)
-  latitude      String? @db.VarChar(100)
-  cnpj_unidade  String? @db.VarChar(14)
-  cnes_unidade  String? @db.VarChar(15)
-
-  data_inclusao  DateTime @default(now()) @db.Timestamp(0)
-  user_inclusao  Int
-  data_alteracao DateTime @default(now()) @db.Timestamp(0)
-  user_alteracao Int
-  ind_ativo      Boolean  @default(true)
-
-  empresa_id             Int
-  empresa                empresa?                 @relation(fields: [empresa_id], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
-  notificacao            notificacao[]
-  acesso_usuario_unidade acesso_usuario_unidade[]
 }
 
 model aux_hint_tela {
