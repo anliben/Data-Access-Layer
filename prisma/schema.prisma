@@ -175,7 +175,9 @@ model acesso_usuario {
   id_usuario             Int                      @id @default(autoincrement())
   hash_registro          String?                  @db.VarChar(32)
   nome_usuario           String?                  @db.VarChar(60)
+  email_usuario           String?                  @db.VarChar(60)
   login_usuario          String?                  @db.VarChar(60)
+  departamento_usuario          String?                  @db.VarChar(60)
   senha_usuario          String?                  @db.VarChar(150)
   id_pessoa              Int?
   data_inclusao          DateTime                 @default(now()) @db.Timestamp(0)
@@ -240,7 +242,6 @@ model pessoa {
   nome_mae               String?            @db.VarChar(200)
   nome_pai               String?            @db.VarChar(200)
   acesso_usuario         acesso_usuario[]
-  notificacao            notificacao[]
   pessoa_contato         pessoa_contato[]
   pessoa_documento       pessoa_documento[]
   pessoa_endereco        pessoa_endereco[]
@@ -298,41 +299,20 @@ model pessoa_endereco {
   pessoa             pessoa?  @relation(fields: [id_pessoa], references: [id_pessoa], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model notificacao {
-  id_notificacao   Int            @id @default(autoincrement())
-  hash_registro    String?        @db.VarChar(32)
-  assunto          String         @db.VarChar(200)
-  mensagem         String?        @db.VarChar(2000)
-  data_notificar   DateTime       @default(now()) @db.Timestamp(6)
-  id_pessoa        Int?
-  status           String?        @db.Char(1)
-  data_inclusao    DateTime       @default(now()) @db.Timestamp(6)
-  user_inclusao    Int
-  data_alteracao   DateTime       @default(now()) @db.Timestamp(6)
-  user_alteracao   Decimal        @db.Decimal
-  id_empresa       Int?
-  empresa          empresa?       @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
-  pessoa           pessoa?        @relation(fields: [id_pessoa], references: [id_pessoa], onDelete: NoAction, onUpdate: NoAction)
-}
-
 model empresa {
   id_empresa             Int                      @id @default(autoincrement())
   hash_registro          String?                  @db.VarChar(32)
-  nome_empresa           String?                  @db.VarChar(100)
+  razao_social           String?                  @db.VarChar(100)
   cnpj_empresa           String?                  @db.VarChar(14)
-  cnes_empresa           String?                  @db.VarChar(15)
-  possui_rad_sistema     Int                      @default(0)
+  nome_fantasia          String?                  @db.VarChar(100)
+  ind_ativo              Boolean                  @default(false)
   data_inclusao          DateTime                 @db.Timestamp(0)
   user_inclusao          Int
   data_alteracao         DateTime                 @db.Timestamp(0)
   user_alteracao         Int
-  nome_fantasia          String?                  @db.VarChar(100)
-  ind_ativo              Boolean                  @default(false)
-  cpf_valido             Boolean                  @default(false)
   acesso_usuario_empresa acesso_usuario_empresa[]
   acesso_usuario_perfil  acesso_usuario_perfil[]
   acesso_perfil          acesso_perfil[]
-  erp_notificacao        notificacao[]
   aux_parametro_valor    aux_parametro_valor[]
 }
 
