@@ -175,9 +175,9 @@ model acesso_usuario {
   id_usuario             Int                      @id @default(autoincrement())
   hash_registro          String?                  @db.VarChar(32)
   nome_usuario           String?                  @db.VarChar(60)
-  email_usuario           String?                  @db.VarChar(60)
+  email_usuario          String?                  @db.VarChar(60)
   login_usuario          String?                  @db.VarChar(60)
-  departamento_usuario          String?                  @db.VarChar(60)
+  departamento_usuario   String?                  @db.VarChar(60)
   senha_usuario          String?                  @db.VarChar(150)
   id_pessoa              Int?
   data_inclusao          DateTime                 @default(now()) @db.Timestamp(0)
@@ -210,8 +210,8 @@ model acesso_usuario_empresa {
   user_alteracao     Int
   ind_ativo          Boolean  @default(false)
 
-  empresa                       empresa        @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
-  usuario                       acesso_usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  empresa empresa        @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
+  usuario acesso_usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model pessoa {
