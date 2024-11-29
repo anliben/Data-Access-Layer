@@ -162,10 +162,6 @@ model acesso_usuario {
   acesso_usuario_empresa   acesso_usuario_empresa[]
   acesso_usuario_acao      acesso_usuario_acao[]
   acesso_acao_tela_usuario acesso_acao_tela_usuario[]
-  pessoa                   pessoa?                    @relation(fields: [pessoaId_pessoa], references: [id_pessoa])
-  pessoaId_pessoa          Int?
-  empresa                  empresa?                   @relation(fields: [empresaId_empresa], references: [id_empresa])
-  empresaId_empresa        Int?
 }
 
 model acesso_usuario_empresa {
@@ -192,6 +188,7 @@ model pessoa {
   sexo_pessoa            String?            @db.Char(1)
   id_genero              Int?
   id_estado_civil        Int?
+  empresa_id             Int?
   email_pessoa           String?            @db.VarChar(60)
   nacionalidade          String?            @db.VarChar(40)
   id_naturalidade        Int?
@@ -210,10 +207,10 @@ model pessoa {
   id_nacionalidade       Int?
   nome_mae               String?            @db.VarChar(200)
   nome_pai               String?            @db.VarChar(200)
-  acesso_usuario         acesso_usuario[]
   pessoa_contato         pessoa_contato[]
   pessoa_documento       pessoa_documento[]
   pessoa_endereco        pessoa_endereco[]
+  empresa                empresa?           @relation(fields: [empresa_id], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model pessoa_contato {
@@ -280,8 +277,8 @@ model empresa {
   data_alteracao         DateTime?                @db.Timestamp(0)
   user_alteracao         Int?
   acesso_usuario_empresa acesso_usuario_empresa[]
-  acesso_usuario         acesso_usuario[]
   aux_parametro_valor    aux_parametro_valor[]
+  pessoa                 pessoa[]
 }
 
 model aux_hint_tela {
